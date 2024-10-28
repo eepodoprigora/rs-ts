@@ -1,63 +1,36 @@
-type Sound = "summer" | "rain" | "winter";
+const COMMENTS_URL = "https://jsonplaceholder.typicode.com/comments";
 
-class WeatherSoundsApp {
-  private audioElement: HTMLAudioElement;
-  private currentSound: Sound | null = null;
-
-  constructor() {
-    this.audioElement = new Audio();
-    this.audioElement.loop = true;
-
-    this.initVolumeControl();
-    this.initButtons();
-  }
-  private initVolumeControl() {
-    const volumeControl = document.querySelector(".volume") as HTMLInputElement;
-
-    volumeControl.addEventListener("input", () => {
-      this.audioElement.volume = parseFloat(volumeControl.value);
-    });
-    this.audioElement.volume = parseFloat(volumeControl.value);
-  }
-  private initButtons() {
-    const buttons = document.querySelectorAll<HTMLButtonElement>(".button");
-    buttons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const sound = button.dataset.sound as Sound;
-        this.toggleSound(sound, button);
-      });
-    });
-  }
-
-  private toggleSound(sound: Sound, button: HTMLButtonElement) {
-    const buttons = document.querySelectorAll<HTMLButtonElement>(".button");
-    buttons.forEach((item) => {
-      item.classList.remove("playing");
-      item.classList.remove("pause");
-    });
-    if (this.currentSound === sound) {
-      if (this.audioElement.paused) {
-        this.audioElement.play();
-        button.classList.add("playing");
-      } else {
-        this.audioElement.pause();
-        button.classList.add("pause");
-      }
-    } else {
-      this.playSound(sound);
-      button.classList.add("playing");
-    }
-  }
-
-  private playSound(sound: Sound) {
-    this.audioElement.src = `assets/sounds/${sound}.mp3`;
-    this.audioElement.play();
-
-    this.currentSound = sound;
-    document.body.className = sound;
-  }
+interface Comment {
+  id: number;
+  email: string;
+  [key: string]: any;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  new WeatherSoundsApp();
-});
+const getData = async (url: string): Promise<any[]> => {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Error loading data");
+  }
+  const data: Comment[] = await response.json();
+
+  return data;
+};
+
+getData(COMMENTS_URL)
+  .then((data) => {
+    data.forEach((comment) => {
+      console.log(`ID: ${comment.id}, Email: ${comment.email}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Error fetching data:", error);
+  });
+
+/**
+ * ID: 1, Email: Eliseo...
+ * ID: 2, Email: Jayne_Kuhic...
+ * ID: 3, Email: Nikita...
+ * ID: 4, Email: Lew...
+ * ...
+ */
