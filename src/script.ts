@@ -3,21 +3,20 @@ const COMMENTS_URL = "https://jsonplaceholder.typicode.com/comments";
 interface Comment {
   id: number;
   email: string;
-  [key: string]: any;
 }
 
-const getData = async (url: string): Promise<any[]> => {
+const getData = async <T>(url: string): Promise<T[]> => {
   const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error("Error loading data");
   }
-  const data: Comment[] = await response.json();
+  const data: T[] = await response.json();
 
   return data;
 };
 
-getData(COMMENTS_URL)
+getData<Comment>(COMMENTS_URL)
   .then((data) => {
     data.forEach((comment) => {
       console.log(`ID: ${comment.id}, Email: ${comment.email}`);

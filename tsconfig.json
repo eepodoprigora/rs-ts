@@ -8,8 +8,8 @@
     "noEmitOnError": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "strict": true
   },
-  // "include": ["src/**/*"],
+  "include": ["src/**/*"], 
   "exclude": ["**/*.spec.ts"]
 }
